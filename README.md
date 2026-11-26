@@ -5,6 +5,15 @@
 
 ![Seera on desktop](docs/desktop-en.png)
 
+## Screenshots
+
+Captured from the live site (https://yousefkhames.github.io/seera/).
+
+<p>
+  <img src="docs/screenshots/live-desktop.png" alt="seera desktop view" width="640">
+  <img src="docs/screenshots/live-mobile.png" alt="seera mobile view" width="200">
+</p>
+
 ## Pitch
 
 Most CV builders put your text in columns, icons and images that ATS software reads badly, and many charge for the PDF. Seera keeps one clean column of real text, checks it against concrete rules, compares it with the job post you paste, and exports a PDF at no cost. The interface and the documents both work in Arabic (RTL) and English, and they switch independently.
