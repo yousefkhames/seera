@@ -1,5 +1,5 @@
 :root{--ink:#1d2433;--ink2:#4a5365;--paper:#f7f1e5;--bg:#efe7d6;--card:#fffdf8;--line:#ddd2bb;--sun:#e8a33d;--clay:#d9663a;--ok:#2f855a;--no:#c0392b;--r:14px;
- --sans:"Segoe UI","Noto Sans Arabic","Noto Sans",system-ui,-apple-system,Tahoma,Arial,sans-serif;--serif:"Noto Naskh Arabic","Traditional Arabic",Georgia,"Times New Roman",serif}
+ --sans:"Cairo","Segoe UI","Noto Sans Arabic","Noto Sans",system-ui,-apple-system,Tahoma,Arial,sans-serif;--serif:"CairoAr","Noto Naskh Arabic","Traditional Arabic",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);min-height:100vh;

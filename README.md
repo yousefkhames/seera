@@ -58,3 +58,9 @@ The browser tests drive headless Chrome over the DevTools protocol at 390px and 
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+## Fonts, offline and limits (round 2)
+
+- Cairo (SIL OFL) is bundled in `fonts/` (woff2). A service worker caches the app and fonts, so it opens offline after the first visit.
+- Imported backups are rebuilt field by field (wrong types, huge text or broken entries cannot crash the editor); stored data gets the same cleaning on load.
+- PDF export uses the browser print dialog ("Save as PDF"). The PDF keeps real selectable text (checked in tests), but the result depends on the browser's print engine. Copy-text shows an error toast if the browser blocks clipboard access.

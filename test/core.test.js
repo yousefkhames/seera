@@ -26,3 +26,15 @@ t('roundtrip export/import keeps content',()=>{const c=Object.assign(C.emptyCV('
 t('i18n en/ar have same keys',()=>{const a=Object.keys(L.en).sort(),b=Object.keys(L.ar).sort();assert.deepStrictEqual(a,b)});
 t('i18n covers every check id',()=>{const r=C.atsCheck(C.emptyCV());r.checks.forEach(c=>{assert(L.en['c_'+c.id]&&L.ar['c_'+c.id],c.id)})});
 console.log(n+' passed');
+
+const assertX = require('node:assert');
+{
+  const hostile = { docs: [{ kind: 'cv', lang: 'ar', name: { a: 1 }, skills: 5, experience: [null, 3, { role: ['x'], bullets: 'a\nb' }], education: 'no', template: 'evil', accent: 'red', font: 'comic', size: 'xl' }, { kind: 'letter', tone: 'zzz', body: 'ok' }, { kind: 'nope' }, null] };
+  const docs = C.validateImport(hostile);
+  assertX.strictEqual(docs.length, 2);
+  assertX.strictEqual(docs[0].name, ''); assertX.strictEqual(docs[0].skills, '5'); assertX.strictEqual(docs[0].experience.length, 1);
+  assertX.strictEqual(docs[0].experience[0].role, ''); assertX.strictEqual(docs[0].experience[0].bullets, 'a\nb'); assertX.deepStrictEqual(docs[0].education, []);
+  assertX.strictEqual(docs[0].template, 'classic'); assertX.strictEqual(docs[0].font, 'sans'); assertX.strictEqual(docs[0].size, 'm');
+  assertX.strictEqual(docs[1].tone, 'formal'); assertX.strictEqual(C.validateImport({ docs: 5 }), null);
+  console.log('ok hostile import is rebuilt with safe types');
+}

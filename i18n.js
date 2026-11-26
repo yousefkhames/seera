@@ -2,7 +2,7 @@ window.SEERA_I18N = {
 en: {
  app:'Seera', tag:'CV and cover letter builder that passes ATS filters', edit:'Edit', preview:'Preview', check:'ATS check', docs:'My documents',
  newcv:'New CV', newletter:'New cover letter', sample:'Load sample', dup:'Duplicate', del:'Delete', confirmDel:'Delete this document? This cannot be undone.',
- cv:'CV', letter:'Cover letter', untitled:'Untitled', pdf:'Save as PDF', txt:'Text (.txt)', json:'Backup (.json)', import:'Import backup', copy:'Copy text', copied:'Copied',
+ cv:'CV', letter:'Cover letter', untitled:'Untitled', pdf:'Save as PDF', txt:'Text (.txt)', json:'Backup (.json)', import:'Import backup', copy:'Copy text', copied:'Copied', copyFailed:'Could not copy. Select the text and copy it manually.',
  docLang:'Document language', uiLang:'العربية', template:'Template', accent:'Accent color', font:'Font', size:'Text size',
  t_classic:'Classic', t_modern:'Modern', t_compact:'Compact', f_sans:'Sans', f_serif:'Serif', s_s:'Small', s_m:'Medium', s_l:'Large',
  personal:'Personal details', name:'Full name', jobtitle:'Job title', email:'Email', phone:'Phone', city:'City, country', link:'Link (LinkedIn, portfolio)',
@@ -28,7 +28,7 @@ en: {
 ar: {
  app:'سيرة', tag:'منشئ سيرة ذاتية وخطاب تقديم يجتاز فلاتر ATS', edit:'تحرير', preview:'معاينة', check:'فحص ATS', docs:'مستنداتي',
  newcv:'سيرة ذاتية جديدة', newletter:'خطاب تقديم جديد', sample:'تحميل مثال', dup:'نسخ', del:'حذف', confirmDel:'حذف هذا المستند؟ لا يمكن التراجع.',
- cv:'سيرة ذاتية', letter:'خطاب تقديم', untitled:'بدون عنوان', pdf:'حفظ PDF', txt:'نص (.txt)', json:'نسخة احتياطية (.json)', import:'استيراد نسخة', copy:'نسخ النص', copied:'تم النسخ',
+ cv:'سيرة ذاتية', letter:'خطاب تقديم', untitled:'بدون عنوان', pdf:'حفظ PDF', txt:'نص (.txt)', json:'نسخة احتياطية (.json)', import:'استيراد نسخة', copy:'نسخ النص', copied:'تم النسخ', copyFailed:'معرفتش أنسخ. حدّد النص وانسخه بإيدك.',
  docLang:'لغة المستند', uiLang:'English', template:'القالب', accent:'لون التمييز', font:'الخط', size:'حجم النص',
  t_classic:'كلاسيكي', t_modern:'عصري', t_compact:'مضغوط', f_sans:'بدون زوائد', f_serif:'بزوائد', s_s:'صغير', s_m:'متوسط', s_l:'كبير',
  personal:'البيانات الشخصية', name:'الاسم الكامل', jobtitle:'المسمى الوظيفي', email:'البريد الإلكتروني', phone:'الهاتف', city:'المدينة، الدولة', link:'رابط (لينكدإن، أعمال)',

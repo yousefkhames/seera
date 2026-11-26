@@ -239,23 +239,42 @@
     return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
   }
 
+  var EXP_ITEM = { role: '', company: '', place: '', start: '', end: '', bullets: '' };
+  var EDU_ITEM = { degree: '', school: '', start: '', end: '', note: '' };
+  function strOf(v, max) { return (typeof v === 'string' ? v : (typeof v === 'number' ? String(v) : '')).slice(0, max); }
+  function itemsOf(list, shape) {
+    return (Array.isArray(list) ? list : []).filter(function (x) { return x && typeof x === 'object'; }).slice(0, 40).map(function (x) {
+      var o = {}; Object.keys(shape).forEach(function (k) { o[k] = strOf(x[k], k === 'bullets' || k === 'note' ? 3000 : 200); }); return o;
+    });
+  }
+  /** Rebuild a document from untrusted data (import or old storage): every field gets the right type and length. */
+  function sanitizeDoc(d) {
+    if (!d || typeof d !== 'object' || (d.kind !== 'cv' && d.kind !== 'letter')) return null;
+    var lang = d.lang === 'ar' ? 'ar' : 'en';
+    var base = d.kind === 'cv' ? emptyCV(lang) : emptyLetter(lang);
+    Object.keys(base).forEach(function (k) {
+      if (['id', 'kind', 'lang', 'updated', 'experience', 'education'].indexOf(k) >= 0) return;
+      base[k] = strOf(d[k], k === 'body' || k === 'job' || k === 'summary' || k === 'why' || k === 'strengths' ? 8000 : 500);
+    });
+    if (d.kind === 'cv') { base.experience = itemsOf(d.experience, EXP_ITEM); base.education = itemsOf(d.education, EDU_ITEM); }
+    base.accent = /^#[0-9a-f]{6}$/i.test(d.accent) ? d.accent : '#0f766e';
+    base.template = ['classic', 'modern', 'compact'].indexOf(d.template) >= 0 ? d.template : 'classic';
+    base.font = d.font === 'serif' ? 'serif' : 'sans';
+    base.size = ['s', 'm', 'l'].indexOf(d.size) >= 0 ? d.size : 'm';
+    if (d.kind === 'letter') base.tone = ['formal', 'friendly', 'bold'].indexOf(d.tone) >= 0 ? d.tone : 'formal';
+    base.updated = Number(d.updated) > 0 ? Number(d.updated) : Date.now();
+    if (typeof d.id === 'string' && /^[\w-]{1,40}$/.test(d.id)) base.id = d.id;
+    return base;
+  }
+
   function validateImport(obj) {
     if (!obj || typeof obj !== 'object') return null;
     var docs = Array.isArray(obj.docs) ? obj.docs : (obj.kind ? [obj] : null);
     if (!docs) return null;
-    return docs.filter(function (d) { return d && (d.kind === 'cv' || d.kind === 'letter'); }).map(function (d) {
-      var base = d.kind === 'cv' ? emptyCV(d.lang) : emptyLetter(d.lang);
-      var out = Object.assign(base, d);
-      out.id = uid();
-      if (out.lang !== 'ar') out.lang = 'en';
-      if (!/^#[0-9a-f]{6}$/i.test(out.accent)) out.accent = '#0f766e';
-      if (['classic', 'modern', 'compact'].indexOf(out.template) < 0) out.template = 'classic';
-      if (d.kind === 'cv') { out.experience = Array.isArray(out.experience) ? out.experience : []; out.education = Array.isArray(out.education) ? out.education : []; }
-      return out;
-    });
+    return docs.map(sanitizeDoc).filter(Boolean).slice(0, 100).map(function (d) { d.id = uid(); return d; });
   }
 
   return { uid: uid, emptyCV: emptyCV, emptyLetter: emptyLetter, tokens: tokens, keywords: keywords, matchJob: matchJob,
     atsCheck: atsCheck, generateLetter: generateLetter, letterText: letterText, cvToText: cvToText, cvPlainText: cvPlainText,
-    bulletsOf: bulletsOf, listOf: listOf, validateImport: validateImport, normalizeDigits: normalizeDigits };
+    bulletsOf: bulletsOf, listOf: listOf, validateImport: validateImport, sanitizeDoc: sanitizeDoc, normalizeDigits: normalizeDigits };
 });

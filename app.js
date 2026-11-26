@@ -7,7 +7,8 @@
   function load() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY));
-      if (s && Array.isArray(s.docs) && s.docs.length) { if (!s.docs.some(function (d) { return d.id === s.current; })) s.current = s.docs[0].id; return s; }
+      if (s && Array.isArray(s.docs)) s.docs = s.docs.map(C.sanitizeDoc).filter(Boolean);
+      if (s && Array.isArray(s.docs) && s.docs.length) { s.ui = s.ui === 'ar' ? 'ar' : 'en'; if (['edit', 'preview', 'check'].indexOf(s.tab) < 0) s.tab = 'edit'; if (!s.docs.some(function (d) { return d.id === s.current; })) s.current = s.docs[0].id; return s; }
     } catch (e) {}
     var ui = (navigator.language || '').toLowerCase().indexOf('ar') === 0 ? 'ar' : 'en';
     var cv = C.emptyCV(ui);
@@ -243,7 +244,7 @@
     copy: function () {
       var t = docText(doc());
       (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast(T('copied')); }, function () {
-        var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast(T('copied')); } catch (e) {} ta.remove();
+        var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); toast(ok ? T('copied') : T('copyFailed'));
       });
     },
     add: function (el) {
@@ -330,5 +331,6 @@
   window.addEventListener('beforeunload', flush);
   window.addEventListener('pagehide', flush);
   renderAll();
+  if ('serviceWorker' in navigator && /^https?:/.test(location.protocol) && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') navigator.serviceWorker.register('sw.js').catch(function () {});
   window.__seera = { state: function () { return state; } };
 })();
