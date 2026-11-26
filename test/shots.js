@@ -1,0 +1,10 @@
+const {launch}=require('./cdp.js');const base=process.argv[2],out=process.argv[3]||'docs';
+(async()=>{let b=await launch(1440,900,false);
+ await b.goto(base);await b.eval('localStorage.clear()');await b.goto(base);
+ await b.click('#btnDocs');await b.click('[data-act=sample]');
+ await b.type('#jobBox','Digital marketing specialist with email marketing, Google Analytics, SEO and Tableau reporting experience.');
+ await b.shot(out+'/desktop-en.png');b.close();
+ b=await launch(390,844,true);await b.goto(base);await b.eval('localStorage.clear()');await b.goto(base);
+ await b.click('#btnUi');await b.click('#btnDocs');await b.click('[data-act=sample]');await b.click('[data-tab=preview]');await b.shot(out+'/mobile-ar-preview.png');
+ await b.click('[data-tab=check]');await b.eval('window.scrollTo(0,0)');await b.shot(out+'/mobile-ar-check.png');
+ await b.click('[data-tab=edit]');await b.shot(out+'/mobile-ar-edit.png');b.close();process.exit(0)})();

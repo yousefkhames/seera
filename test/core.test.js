@@ -1,0 +1,28 @@
+const assert=require('assert');const C=require('../core.js');
+const I=require('fs').readFileSync(__dirname+'/../i18n.js','utf8');
+global.window={};eval(I);const S=window.SEERA_SAMPLE,L=window.SEERA_I18N;
+let n=0;function t(name,f){try{f();n++;console.log('ok',name)}catch(e){console.error('FAIL',name,e.message);process.exitCode=1}}
+t('tokens strip Arabic marks & digits',()=>{assert.deepStrictEqual(C.tokens('الخِبرة ٥ سنوات'),['الخبره','5','سنوات'])});
+t('keywords ignore stopwords & rank',()=>{const k=C.keywords('We need a React developer. React and Node.js required, the team uses React.',3);assert.strictEqual(k[0].word,'react');assert(!k.some(x=>x.word==='the'))});
+t('keywords keep node.js intact',()=>{assert(C.keywords('Node.js developer').some(x=>x.word==='node.js'))});
+t('arabic definite article stemmed',()=>{const m=C.matchJob('خبرة في التسويق الرقمي','مطلوب خبرة في تسويق رقمي');assert(m.score>=60,m.score)});
+t('matchJob finds missing',()=>{const m=C.matchJob('I know Excel and SQL','Looking for Excel, SQL and Tableau skills');assert(m.missing.includes('tableau'));assert(m.found.includes('excel'))});
+t('empty job gives null',()=>{assert.strictEqual(C.matchJob('abc','the and of').score,null)});
+t('empty CV scores low',()=>{assert(C.atsCheck(C.emptyCV()).score<20)});
+['en','ar'].forEach(l=>t('sample '+l+' CV scores high',()=>{const c=Object.assign(C.emptyCV(l),JSON.parse(JSON.stringify(S[l])));const r=C.atsCheck(c);assert(r.score>=90,l+' '+r.score+JSON.stringify(r.checks.filter(x=>!x.ok)))}));
+t('email validation',()=>{const c=C.emptyCV();c.email='bad@';assert(!C.atsCheck(c).checks.find(x=>x.id==='email').ok);c.email='a@b.co';assert(C.atsCheck(c).checks.find(x=>x.id==='email').ok)});
+t('arabic-indic phone digits count',()=>{const c=C.emptyCV();c.phone='٠١٠٠١٢٣٤٥٦٧';assert(C.atsCheck(c).checks.find(x=>x.id==='phone').ok)});
+t('numbers check detects arabic digits',()=>{const c=C.emptyCV('ar');c.experience=[{role:'a',company:'b',start:'1',bullets:'زدت المبيعات ٣٠٪\nأدرت فريقا'}];assert(C.atsCheck(c).checks.find(x=>x.id==='numbers').ok)});
+t('long bullet flagged',()=>{const c=C.emptyCV();c.experience=[{role:'a',company:'b',start:'1',bullets:Array(40).fill('word').join(' ')}];assert(!C.atsCheck(c).checks.find(x=>x.id==='longbullets').ok)});
+['en','ar'].forEach(l=>['formal','friendly','bold'].forEach(tn=>t('letter '+l+' '+tn,()=>{const d=Object.assign(C.emptyLetter(l),{tone:tn,company:'Acme',role:'Analyst',years:'4',strengths:'a, b, c',name:'X',recipient:'Sara'});const g=C.generateLetter(d);const all=g.paragraphs.join(' ');assert(all.includes('Acme')&&all.includes('Analyst'));assert(all.includes('4'));assert(!/\{\w+\}/.test(all));assert(g.greeting.includes('Sara'))})));
+t('letter without data has fallbacks',()=>{const g=C.generateLetter(C.emptyLetter('en'));assert(g.greeting==='Dear Hiring Manager,');assert(!/\{\w+\}/.test(g.paragraphs.join(''))&&!/undefined/.test(g.paragraphs.join('')))});
+t('letter ignores non-numeric years',()=>{const d=C.emptyLetter('en');d.years='lots';assert(!C.generateLetter(d).paragraphs[0].includes('lots'))});
+t('letterText uses custom body',()=>{const d=C.emptyLetter('en');d.body='Custom';d.name='Z';assert(C.letterText(d).includes('Custom')&&C.letterText(d).endsWith('Z'))});
+t('cvToText has headings and bullets',()=>{const c=Object.assign(C.emptyCV('en'),JSON.parse(JSON.stringify(S.en)));const x=C.cvToText(c);assert(x.includes('EXPERIENCE')&&x.includes('- Grew online'))});
+t('cvToText arabic headings',()=>{const c=Object.assign(C.emptyCV('ar'),JSON.parse(JSON.stringify(S.ar)));assert(C.cvToText(c).includes('الخبرة العملية'))});
+t('validateImport sanitizes',()=>{const r=C.validateImport({docs:[{kind:'cv',lang:'xx',accent:'red',template:'evil',experience:'no'},{kind:'bad'}]});assert.strictEqual(r.length,1);assert.strictEqual(r[0].lang,'en');assert.strictEqual(r[0].accent,'#0f766e');assert.strictEqual(r[0].template,'classic');assert(Array.isArray(r[0].experience))});
+t('validateImport rejects junk',()=>{assert.strictEqual(C.validateImport(null),null);assert.strictEqual(C.validateImport({a:1}),null)});
+t('roundtrip export/import keeps content',()=>{const c=Object.assign(C.emptyCV('ar'),JSON.parse(JSON.stringify(S.ar)));const r=C.validateImport(JSON.parse(JSON.stringify({docs:[c]})))[0];assert.strictEqual(r.name,c.name);assert.notStrictEqual(r.id,c.id)});
+t('i18n en/ar have same keys',()=>{const a=Object.keys(L.en).sort(),b=Object.keys(L.ar).sort();assert.deepStrictEqual(a,b)});
+t('i18n covers every check id',()=>{const r=C.atsCheck(C.emptyCV());r.checks.forEach(c=>{assert(L.en['c_'+c.id]&&L.ar['c_'+c.id],c.id)})});
+console.log(n+' passed');
