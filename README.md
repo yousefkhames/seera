@@ -19,7 +19,7 @@ Most CV builders put your text in columns, icons and images that ATS software re
 - Arabic and English everywhere: UI language and document language are separate. Arabic-Indic digits are understood by the checks.
 - Export: PDF (browser print to PDF, real selectable text), plain text, JSON backup and restore.
 - Several documents, duplicate and delete. Everything is autosaved in your browser.
-- Mobile first, works offline after the first load, keyboard friendly.
+- Mobile first and keyboard friendly.
 
 ## Screenshots
 

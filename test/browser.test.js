@@ -33,6 +33,8 @@ const base=process.argv[2]||'http://127.0.0.1:8123/';const dir=process.argv[3]||
    // preview tab
    if(w<760)await b.click('[data-tab=preview]');
    await b.shot(dir+'/preview-'+w+'.png');
+   if(w<760)await b.click('[data-tab=preview]');
+   assert(await b.eval(`(()=>{const s=document.getElementById('sheet').getBoundingClientRect(),w=document.querySelector('.sheet-wrap').getBoundingClientRect();return s.right<=w.right+1&&s.left>=w.left-1})()`));ok(w+': sheet fits its frame');
    // persistence
    await b.eval(`window.dispatchEvent(new Event('pagehide'))`);await b.goto(base);
    assert.strictEqual(await b.eval(`document.querySelector('#sheet h1').textContent`),'Omar Nabil');ok(w+': persists reload');

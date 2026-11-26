@@ -320,6 +320,13 @@
     };
     r.readAsText(f); e.target.value = '';
   });
+  function fit() {
+    var w = $('.sheet-wrap'); if (!w || !w.clientWidth) return;
+    $('#sheet').style.setProperty('--zoom', Math.min(1, (w.clientWidth - 16) / 794).toFixed(3));
+  }
+  window.addEventListener('resize', fit);
+  if (window.ResizeObserver) new ResizeObserver(fit).observe($('.sheet-wrap'));
+  var _ra = renderShell; renderShell = function () { _ra(); fit(); };
   window.addEventListener('beforeunload', flush);
   window.addEventListener('pagehide', flush);
   renderAll();
