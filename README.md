@@ -7,7 +7,7 @@
 
 ## Screenshots
 
-Captured from the live site (https://yousefkhames.github.io/seera/).
+Captured from the live site (https://yousefkhames.github.io/seera/) with sample demo content entered for the screenshot. It is not real user data.
 
 <p>
   <img src="docs/screenshots/live-desktop.png" alt="seera desktop view" width="640">
